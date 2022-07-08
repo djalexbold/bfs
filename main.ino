@@ -1,8 +1,8 @@
-#include <LiquidCrystal_I2C.h> // LCD дисплей 4x20, работает по шине I2C
+#include <LiquidCrystal_I2C.h> // LCD display 4x20,  I2C bus
 #include <Wire.h>              
 #include <Rotary.h> 
 #include <si5351.h>
-#include <Keypad.h> // матричная клавиатура
+#include <Keypad.h> // matrix keyboard
 
 #define IF  10700                // Enter your IF frequency, ex: 455 = 455kHz, 10700 = 10.7MHz, 0 = to direct convert receiver or RF generator, + will add and - will subtract IF offfset.
 #define FREQ_INIT    100000000   // Enter your initial frequency at startup, ex: 7000000 = 7MHz, 10000000 = 10MHz, 840000 = 840kHz.
@@ -64,7 +64,7 @@ void tunegen() {
   si5351.set_freq((freq + (interfreq * 1000ULL)) * 100ULL, SI5351_CLK0);
   //si5351.set_freq_manual((freq + (interfreq * 1000ULL)) * 100ULL, pll_freq, SI5351_CLK0);
 }
-
+//multiples
 void displayfreq() {
   unsigned int m = freq / 1000000;
   unsigned int k = (freq % 1000000) / 1000;
@@ -83,7 +83,7 @@ void displayfreq() {
   }
   lcd.print(buffer);
 }
-
+///////////////////frequency step
 void setstep() {
   switch (stp) {
     case 1:
@@ -139,7 +139,7 @@ void layout() {
 }
 
       void initBar1() {
-        // необходимые символы для работы
+        // scale symbols
         byte right_empty[8] = {0b11111,  0b00001,  0b00001,  0b00001,  0b00001,  0b00001,  0b00001,  0b11111};
         byte left_empty[8] = {0b11111,  0b10000,  0b10000,  0b10000,  0b10000,  0b10000,  0b10000,  0b11111};
         byte center_empty[8] = {0b11111, 0b00000,  0b00000,  0b00000,  0b00000,  0b00000,  0b00000,  0b11111};
@@ -190,7 +190,7 @@ void layout() {
 void setup() {
   Wire.begin();
     
-  lcd.backlight();          // включаем подсветку
+  lcd.backlight();          // turn on the backlight
   lcd.begin(20, 4);         // Initialize and clear the lcd
   lcd.clear();  
 
@@ -208,8 +208,8 @@ void setup() {
   PCMSK2 |= (1 << PCINT18) | (1 << PCINT19);
   sei();
 
-  initBar1(); // инициализация символов для отрисовки s-метра.
-  stp = 5; //  дефолтная установка шага перестройки
+  initBar1(); // character initialization for drawing the s-meter
+  stp = 5; //  default setting of rebuild step
   setstep();
   layout();
   displayfreq();
@@ -246,7 +246,7 @@ char key = keypad.getKey();
     }
   }
 
-     if (millis() - time_now > 200){ // время обновления S-метра в mc
+     if (millis() - time_now > 200){ // s-meter update time in mc
       time_now = millis(); 
       int perc = map(analogRead(sMetr), 0, 1023, 0, 100);
       fillBar1(7, 2, 10, perc);
